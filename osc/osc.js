@@ -64,33 +64,24 @@ class Oscilloscope {
       return
     }
 
-    this.canvasContext.fillStyle = 'rgb(0, 0, 0)'
-    this.canvasContext.fillRect(0, 0, this.width, this.height)
+    this.setDraw()
 
     this.inputData.map((data, index) => {
-      this.canvasContext.lineWidth = 1
-      this.canvasContext.strokeStyle = this.colors[index]
-      this.canvasContext.beginPath()
-
-      const sliceWidth = this.width * 1.0 / data.length
-      let x = 0
-
-      for (let i = 0; i < data.length; i++) {
-        const v = this.height / 2
-        const y = v * data[i] + this.height / 2
-
-        if (i === 0) {
-          this.canvasContext.moveTo(x, y)
-        } else {
-          this.canvasContext.lineTo(x, y)
-        }
-
-        x += sliceWidth
-      }
-
-      this.canvasContext.lineTo(this.canvasContext.width, this.canvasContext.height / 2)
-      this.canvasContext.stroke()
+      this.drawData(data, index)
     })
+  }
+
+  drawRecorded () {
+    this.setDraw()
+
+    this.recorded.map((data, index) => {
+      this.drawData(data, index)
+    })
+  }
+
+  setDraw () {
+    this.canvasContext.fillStyle = 'rgb(0, 0, 0)'
+    this.canvasContext.fillRect(0, 0, this.width, this.height)
   }
 
   drawData (data, index) {
@@ -130,6 +121,7 @@ class Oscilloscope {
     const toggle = document.querySelector('.toggle-draw')
     const startRec = document.querySelector('.start-rec')
     const stopRec = document.querySelector('.stop-rec')
+    const drawRec = document.querySelector('.draw-rec')
 
     if (toggle) {
       toggle.addEventListener('click', () => { this.isDrawing = !this.isDrawing })
@@ -138,6 +130,10 @@ class Oscilloscope {
     if (startRec && stopRec) {
       startRec.addEventListener('click', () => { this.isRecording = true })
       stopRec.addEventListener('click', () => { this.isRecording = false })
+    }
+
+    if (drawRec) {
+      drawRec.addEventListener('click', () => this.drawRecorded())
     }
   }
 }

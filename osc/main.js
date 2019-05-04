@@ -61,7 +61,7 @@ function connectNodes (stream) {
   delay.delayTime.setValueAtTime(1 / 190, audioContext.currentTime)
 
   const gain = audioContext.createGain()
-  // gain.gain.setValueAtTime(0.5, audioContext.currentTime)
+  gain.gain.setValueAtTime(0.5, audioContext.currentTime)
   // gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 50)
 
   const osc = audioContext.createOscillator()
