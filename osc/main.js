@@ -58,11 +58,11 @@ function connectNodes (stream) {
   const audioInput = audioContext.createMediaStreamSource(stream)
 
   const delay = audioContext.createDelay(5)
-  delay.delayTime.setValueAtTime(1 / 190, audioContext.currentTime)
+  delay.delayTime.setValueAtTime(1 / 10, audioContext.currentTime)
 
   const gain = audioContext.createGain()
-  gain.gain.setValueAtTime(0.5, audioContext.currentTime)
-  // gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 50)
+  gain.gain.setValueAtTime(1, audioContext.currentTime)
+  gain.gain.exponentialRampToValueAtTime(0.1, audioContext.currentTime + 1)
 
   const osc = audioContext.createOscillator()
   osc.frequency.value = 200
@@ -77,7 +77,7 @@ function connectNodes (stream) {
   ])
 
   oscilloscope.start()
-  oscilloscope.draw()
+  // oscilloscope.draw()
 }
 
 document.querySelector('.pey').addEventListener('click', () => {

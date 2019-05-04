@@ -1,5 +1,8 @@
 class Oscilloscope {
   constructor ({ audioContext, canvasContext }) {
+    this.bufferSize = 256
+    this.sampleSize = this.bufferSize
+
     this.inputs = []
     this.inputData = []
     this.recorders = []
@@ -10,7 +13,8 @@ class Oscilloscope {
     this.width = canvasContext.canvas.width
     this.height = canvasContext.canvas.height
 
-    this.isDrawing = true
+    this.isDrawing = false
+    this.plotBegin = 0
 
     this.colors = [
       'rgba(255, 255, 255, 1)',
@@ -30,7 +34,7 @@ class Oscilloscope {
 
   start () {
     this.recorders = this.inputs.map((node, index) => {
-      const processor = this.audioContext.createScriptProcessor(256, 2, 1)
+      const processor = this.audioContext.createScriptProcessor(this.bufferSize, 1, 1)
       processor.connect(this.audioContext.destination)
 
       node.connect(processor)
@@ -75,7 +79,8 @@ class Oscilloscope {
     this.setDraw()
 
     this.recorded.map((data, index) => {
-      this.drawData(data, index)
+      const slice = data.slice(this.plotBegin, this.plotBegin + this.sampleSize)
+      this.drawData(slice, index)
     })
   }
 
@@ -89,7 +94,7 @@ class Oscilloscope {
     this.canvasContext.strokeStyle = this.colors[index]
     this.canvasContext.beginPath()
 
-    const sliceWidth = this.width * 1.0 / data.length
+    const sliceWidth = this.width * 1.0 / this.sampleSize
     let x = 0
 
     for (let i = 0; i < data.length; i++) {
@@ -122,18 +127,52 @@ class Oscilloscope {
     const startRec = document.querySelector('.start-rec')
     const stopRec = document.querySelector('.stop-rec')
     const drawRec = document.querySelector('.draw-rec')
+    const windowSize = document.querySelector('.window-size-range')
+    const position = document.querySelector('.position-range')
 
     if (toggle) {
-      toggle.addEventListener('click', () => { this.isDrawing = !this.isDrawing })
+      toggle.addEventListener('click', () => {
+        this.isDrawing = !this.isDrawing
+
+        if (this.isDrawing) {
+          this.draw()
+        }
+      })
     }
 
     if (startRec && stopRec) {
       startRec.addEventListener('click', () => { this.isRecording = true })
-      stopRec.addEventListener('click', () => { this.isRecording = false })
+
+      stopRec.addEventListener('click', () => {
+        position.max = this.recorded[0].length - this.sampleSize
+        this.isRecording = false
+      })
     }
 
     if (drawRec) {
       drawRec.addEventListener('click', () => this.drawRecorded())
+    }
+
+    if (windowSize) {
+      windowSize.min = 1
+      windowSize.max = 50
+
+      windowSize.addEventListener('change', (ev) => {
+        this.sampleSize = this.recorded[0].length / ev.target.value
+
+        position.max = this.recorded[0].length - this.sampleSize
+
+        this.drawRecorded()
+      })
+    }
+
+    if (position) {
+      position.min = 0
+
+      position.addEventListener('change', (ev) => {
+        this.plotBegin = ev.target.value
+        this.drawRecorded()
+      })
     }
   }
 }

@@ -13,15 +13,37 @@
       width: 100%;
       justify-content: center;
     }
+
+    input[type="range"] {
+      width: 100%;
+    }
   </style>
   <canvas width="600" height="400"></canvas>
   <div>
-    <button class="toggle-draw">toggle draw</button>
-    <button class="start-rec">start rec</button>
-    <button class="stop-rec">stop rec</button>
-    <button class="draw-rec">draw recorded</button>
+    <div>
+      <div>
+        position
+        <input type="range" class="position-range">
+      </div>
+      <div>
+        window size
+        <input type="range" class="window-size-range">
+      </div>
+      <div>
+        <button class="start-rec">start rec</button>
+        <button class="stop-rec">stop rec</button>
+        <button class="draw-rec">draw recorded</button>
+      </div>
+      <!-- <div>
+        size
+        <input type="range" class="">
+      </div> -->
+    </div>
+    <div>
+      <button class="toggle-draw">toggle draw</button>
+    </div>
+    <button class="pey">pey</button>
   </div>
-  <button class="pey">pey</button>
   <script src="osc.js"></script>
   <script src="main.js"></script>
 </html>
