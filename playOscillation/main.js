@@ -45,7 +45,7 @@ function getOscillation (signal) {
       lastSignal = currentSignal
     }
 
-    if (transitions.length >= 1 && transitions.length < 3) {
+    if (transitions.length >= 1 && transitions.length == 20) {
       recorded.push(amp)
     }
   }
@@ -82,15 +82,19 @@ function connectNodes (stream) {
 
   const processor = audioContext.createScriptProcessor(256, 2, 1)
   // const signal = createSignal(audioContext.sampleRate / 256 * 2, audioContext)
-  const signal = createSignal(50, audioContext)
+  // const signal = createSignal(50, audioContext)
+  audioInput.connect(processor)
 
   let counter = 0
+  let signal = []
 
   processor.onaudioprocess = (ev) => {
     const inputData = ev.inputBuffer.getChannelData(0)
     const outputData = ev.outputBuffer.getChannelData(0)
 
     const length = inputData.length
+
+    signal = getOscillation(inputData)
 
     for (let sample = 0; sample < length; sample++) {
       if (signal[counter] !== undefined) {
@@ -99,6 +103,7 @@ function connectNodes (stream) {
       } else {
         // outputData[sample] = signal[counter - 1]
         // outputData[sample] = (signal[counter - 1] + signal[0]) / 2
+        // console.log('sub')
         outputData[sample] = signal[0]
         counter = 0
       }
@@ -107,6 +112,7 @@ function connectNodes (stream) {
 
   oscilloscope.setInputs([
     // oscillator,
+    // audioInput,
     processor
   ])
 
