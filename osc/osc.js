@@ -1,5 +1,5 @@
 class Oscilloscope {
-  constructor ({ audioContext, canvasContext }) {
+  constructor ({ audioContext, canvasContext, isDrawing = false }) {
     this.bufferSize = 256
     this.sampleSize = this.bufferSize
 
@@ -13,7 +13,7 @@ class Oscilloscope {
     this.width = canvasContext.canvas.width
     this.height = canvasContext.canvas.height
 
-    this.isDrawing = false
+    this.isDrawing = isDrawing
     this.plotBegin = 0
 
     this.colors = [
@@ -41,12 +41,13 @@ class Oscilloscope {
 
       processor.onaudioprocess = (ev) => {
         const inputData = ev.inputBuffer.getChannelData(0)
-        // const outputData = ev.outputBuffer.getChannelData(0)
+        const outputData = ev.outputBuffer.getChannelData(0)
 
         const length = inputData.length
 
         for (let sample = 0; sample < length; sample++) {
-          // outputData[sample] = inputData[sample]
+          outputData[sample] = inputData[sample]
+
           if (this.isRecording) {
             this.recorded[index].push(inputData[sample])
           }
@@ -155,7 +156,7 @@ class Oscilloscope {
 
     if (windowSize) {
       windowSize.min = 1
-      windowSize.max = 50
+      windowSize.max = 200
 
       windowSize.addEventListener('change', (ev) => {
         this.sampleSize = this.recorded[0].length / ev.target.value
@@ -169,7 +170,7 @@ class Oscilloscope {
     if (position) {
       position.min = 0
 
-      position.addEventListener('change', (ev) => {
+      position.addEventListener('input', (ev) => {
         this.plotBegin = ev.target.value
         this.drawRecorded()
       })
