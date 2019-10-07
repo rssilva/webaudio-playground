@@ -60,7 +60,7 @@ function connectNodes (stream) {
   const audioInput = audioContext.createMediaStreamSource(stream)
 
   const delay = audioContext.createDelay(5)
-  delay.delayTime.setValueAtTime(1 / 220, audioContext.currentTime)
+  delay.delayTime.setValueAtTime(1 / 10000, audioContext.currentTime)
 
   audioInput.connect(delay)
 

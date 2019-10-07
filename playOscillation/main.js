@@ -75,14 +75,11 @@ function connectNodes (stream) {
   const audioInput = audioContext.createMediaStreamSource(stream)
   const oscillator = audioContext.createOscillator()
   oscillator.frequency.value = 350
-  // oscillator.
+
   oscillator.start()
 
-  // oscillator.connect(audioContext.destination)
-
   const processor = audioContext.createScriptProcessor(256, 2, 1)
-  // const signal = createSignal(audioContext.sampleRate / 256 * 2, audioContext)
-  // const signal = createSignal(50, audioContext)
+
   audioInput.connect(processor)
 
   let counter = 0
@@ -101,9 +98,6 @@ function connectNodes (stream) {
         outputData[sample] = signal[counter]
         counter++
       } else {
-        // outputData[sample] = signal[counter - 1]
-        // outputData[sample] = (signal[counter - 1] + signal[0]) / 2
-        // console.log('sub')
         outputData[sample] = signal[0]
         counter = 0
       }
