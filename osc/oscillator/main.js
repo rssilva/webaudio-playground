@@ -53,31 +53,38 @@ function getOscillation (signal) {
   return recorded
 }
 
+const GLOBAL = {}
+
 function connectNodes (stream) {
   const oscilloscope = new Oscilloscope({ audioContext, canvasContext: document.querySelector('canvas').getContext('2d') })
-  const audioInput = audioContext.createMediaStreamSource(stream)
-
-  const delay = audioContext.createDelay(5)
-  delay.delayTime.setValueAtTime(1 / 220, audioContext.currentTime)
+  // const audioInput = audioContext.createMediaStreamSource(stream)
 
   const gain = audioContext.createGain()
   gain.gain.setValueAtTime(1, audioContext.currentTime)
-  gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 10)
+  // gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 20)
 
-  const osc = audioContext.createOscillator()
-  osc.frequency.value = 200
-  osc.start()
+  const osc1 = audioContext.createOscillator()
+  osc1.frequency.value = 350
+  osc1.type = 'sin'
+  osc1.start()
 
-  osc.connect(delay)
-  delay.connect(gain)
+  const osc2 = audioContext.createOscillator()
+  osc2.frequency.value = 10
+  osc2.start()
+
+  osc1.connect(gain)
+  osc2.connect(gain.gain)
 
   oscilloscope.setInputs([
-    gain,
-    osc
+    // osc1,
+    // osc2,
+    gain
   ])
 
   oscilloscope.start()
   // oscilloscope.draw()
+  GLOBAL.gain = gain
+  GLOBAL.osc1 = osc1
 }
 
 document.querySelector('.pey').addEventListener('click', () => {

@@ -18,7 +18,8 @@ class Oscilloscope {
 
     this.colors = [
       'rgba(255, 255, 255, 1)',
-      'rgb(255, 255, 0)'
+      'rgb(255, 255, 0)',
+      'rgb(255, 0, 0)'
     ]
 
     this.recorded = []
@@ -99,7 +100,7 @@ class Oscilloscope {
     let x = 0
 
     for (let i = 0; i < data.length; i++) {
-      const v = this.height / 2
+      const v = this.height / 4
       const y = v * data[i] + this.height / 2
 
       if (i === 0) {
